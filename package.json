@@ -1,0 +1,25 @@
+{
+  "name": "case-9-spel-websockets",
+  "version": "1.0.0",
+  "description": "Websocket Spel Mollie",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mollietsirigotis/Case-9-Spel-Websockets.git"
+  },
+  "author": "mollietsirigotis",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/mollietsirigotis/Case-9-Spel-Websockets/issues"
+  },
+  "homepage": "https://github.com/mollietsirigotis/Case-9-Spel-Websockets#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "nodemon": "^3.1.11",
+    "ws": "^8.19.0"
+  }
+}
