@@ -4,7 +4,9 @@ const formMessage = document.querySelector("#formMessage");
 const msgElement = document.getElementById("msg");
 const chatElement = document.getElementById("chat");
 const usernameElement = document.querySelector("#username");
-const chatSection = document.querySelector("#chatSection");
+const gamePage = document.querySelector("#gamePage");
+const startPage = document.querySelector("#startPage");
+
 
 // Websocket-anslutning till servern
 
@@ -19,13 +21,18 @@ formUsername.addEventListener("submit", (e) => {
   e.preventDefault();
 
   // Spara användarnamnet lokalt
-  username = usernameElement.value;
+  username = usernameElement.value.trim();
 
   // Lås input så namnet inte ändras mitt i chatten
   usernameElement.setAttribute("disabled", true);
 
   // Visa chattsektionen först när användaren submittat sitt användarnamn
-  chatSection.classList.remove("hidden");
+  // chatSection.classList.remove("hidden");
+  // istället för chatSection.classList.remove("hidden"); Lägg till display flex
+  // ge startPage class hidden
+
+  gamePage.style.display = "flex";
+  startPage.classList.add("hidden");
 });
 
 // När användaren skickar ett chattmeddelande
@@ -65,7 +72,6 @@ websocket.addEventListener("message", (e) => {
 // Funktioner
 
 function renderMessage(obj) {
-
   const p = document.createElement("p");
 
   // Visar både användarnamn och meddelande

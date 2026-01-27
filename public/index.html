@@ -8,17 +8,32 @@
 </head>
 <body>
 
-    <h1>Websocket</h1>
+    <div id="startPage">
+    <h1>WELCOME TO</h1>
+    <img src="/img/rascals-logo.png" alt="Rascals Logo" style="text-align: center;">
+
+    <h3 style="text-align: center;">Pick your Username and get started!</h3>
 
     <!-- Formulär som anger användarnamn-->
     <form id="formUsername" action="">
 
-        <input type="text" name="username" id="username" placeholder="Username">
-        <input type="submit" value="Start chatting">
+        <input type="text" name="username" id="username" placeholder="Username"><br>
+        <input type="submit" value="Start Game">
 
     </form>
+    </div>
+    <div id="gamePage" class="hidden">
 
-    <section id="chatSection" class="hidden">
+    <canvas style="image-rendering: pixelated;"></canvas>
+
+    <section id="chatSection">
+    
+    <div id="chat">
+
+        <div class="message">
+        </div>
+
+    </div>
     <!-- Formulär för att skriva meddelande -->
     <form id="formMessage" action="">
 
@@ -26,14 +41,8 @@
         <input type="submit" value="Send">
 
     </form>
-
-    <div id="chat">
-
-        <div class="message">
-        </div>
-
-    </div>
     </section>
+    </div>
 
     <script src="scripts/code.js"> </script>
     
