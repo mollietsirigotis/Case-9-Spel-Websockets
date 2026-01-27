@@ -6,7 +6,7 @@ const chatElement = document.getElementById("chat");
 const usernameElement = document.querySelector("#username");
 const gamePage = document.querySelector("#gamePage");
 const startPage = document.querySelector("#startPage");
-
+const sendButton = document.querySelector("#sendButton");
 
 // Websocket-anslutning till servern
 
@@ -33,6 +33,18 @@ formUsername.addEventListener("submit", (e) => {
 
   gamePage.style.display = "flex";
   startPage.classList.add("hidden");
+});
+
+// Lyssnar på input i meddelandefältet
+msgElement.addEventListener("input", () => {
+  if (msgElement.value.trim() === "") {
+    sendButton.classList.add("disabled");
+    sendButton.disabled = true;
+    return;
+  } else {
+    sendButton.classList.remove("disabled");
+    sendButton.disabled = false;
+  }
 });
 
 // När användaren skickar ett chattmeddelande

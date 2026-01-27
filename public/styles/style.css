@@ -127,3 +127,9 @@ canvas {
 #startPage img {
     margin-bottom: 2rem;
 }
+
+.disabled {
+    pointer-events: none;
+    background-color: grey;
+    opacity: 0.6;
+}
