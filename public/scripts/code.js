@@ -14,6 +14,10 @@ const websocket = new WebSocket("ws://localhost:8555");
 
 let username;
 
+// Skicka knappen är inaktiv från start
+sendButton.disabled = true;
+sendButton.classList.add("disabled");
+
 // Händelselyssnare
 
 // När användaren anger sitt namn och strartar chatten
@@ -31,19 +35,19 @@ formUsername.addEventListener("submit", (e) => {
   // istället för chatSection.classList.remove("hidden"); Lägg till display flex
   // ge startPage class hidden
 
-  gamePage.style.display = "flex";
+  usernameElement.value = "";
   startPage.classList.add("hidden");
+  gamePage.classList.remove("hidden");
 });
 
 // Lyssnar på input i meddelandefältet
 msgElement.addEventListener("input", () => {
   if (msgElement.value.trim() === "") {
-    sendButton.classList.add("disabled");
     sendButton.disabled = true;
-    return;
+    sendButton.classList.add("disabled");
   } else {
-    sendButton.classList.remove("disabled");
     sendButton.disabled = false;
+    sendButton.classList.remove("disabled");
   }
 });
 
@@ -52,7 +56,8 @@ formMessage.addEventListener("submit", (e) => {
   e.preventDefault();
 
   // Hämtar texten som skrivits i inputfältet
-  const msg = msgElement.value;
+  const msg = msgElement.value.trim();
+  if (msg === "") return;
 
   // Skapar ett obj som innehåller både: meddelandet och vem som skickade det
   const obj = { msg: msg, username: username };
@@ -62,6 +67,9 @@ formMessage.addEventListener("submit", (e) => {
 
   // Rensar input fältet efter meddelandet har skickats
   msgElement.value = "";
+  
+  sendButton.disabled = true;
+  sendButton.classList.add("disabled");
 });
 
 // Lyssnar på tangenttryck i meddelandeinput
