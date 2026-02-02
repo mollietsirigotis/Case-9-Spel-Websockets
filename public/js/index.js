@@ -6,11 +6,13 @@ canvas.width = 1024 * dpr
 canvas.height = 576 * dpr
 
 const layersData = {
+   l_Collision: l_Collision,
    l_Background: l_Background,
    l_Decorations: l_Decorations,
 };
 
 const tilesets = {
+  l_Collision: { imageUrl: './img/terrain.png', tileSize: 16 },
   l_Background: { imageUrl: './img/terrain.png', tileSize: 16 },
   l_Decorations: { imageUrl: './img/decorations.png', tileSize: 16 },
 };
