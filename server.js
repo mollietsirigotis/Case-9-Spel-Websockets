@@ -42,7 +42,7 @@ wss.on('connection', (ws) => {
     // Skicka meddelande till den nya klienten
     // Skicka och ta emot data förutsatt att det är i JSON format
     const obj = { msg:"Welcome to the chat!" };
-    ws.send(JSON.stringify(obj)); 
+    ws.send(JSON.stringify(obj));
 
     
     // När en klient lämnar chatten

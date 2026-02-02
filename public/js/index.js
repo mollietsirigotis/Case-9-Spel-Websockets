@@ -5,6 +5,9 @@ const dpr = window.devicePixelRatio || 1
 canvas.width = 1024 * dpr
 canvas.height = 576 * dpr
 
+// const zoomLevel = 3;
+c.imageSmoothingEnabled = false;
+
 const layersData = {
    l_Collision: l_Collision,
    l_Background: l_Background,
@@ -99,9 +102,9 @@ const renderStaticLayers = async () => {
 
 // Change xy coordinates to move player's default position
 const player = new Player({
-  x: 100,
-  y: 100,
-  size: 15,
+  x: 50,
+  y: 50,
+  size: { width: 32, height: 32 },
 })
 
 const keys = {
@@ -132,6 +135,7 @@ function animate(backgroundCanvas) {
 
   // Render scene
   c.save()
+  // c.scale(dpr * zoomLevel, dpr * zoomLevel);
   c.scale(dpr, dpr)
   c.clearRect(0, 0, canvas.width, canvas.height)
   c.drawImage(backgroundCanvas, 0, 0)
