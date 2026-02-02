@@ -66,12 +66,11 @@ input {
 }
 
 canvas {
-    margin-top: 1rem;
-    width: 1024px;
-    height: 640px;
     border: 1px solid black;
-    background-color: white;
+    background-color: black;
     margin: 1rem;
+    width: 1024px;
+    height: 576px;
 }
 #chatSection {  
     display: flex;
@@ -118,10 +117,6 @@ canvas {
     height: 100vh;
     width: 100%;
     background-color: rgb(92, 92, 92);
-}
-
-#startPage img {
-    margin-bottom: 2rem;
 }
 
 .disabled {

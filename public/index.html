@@ -1,50 +1,60 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles/style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles/style.css" />
     <title>RASCALS</title>
-</head>
-<body>
-
+  </head>
+  <body>
     <div id="startPage">
-    <h1>WELCOME TO</h1>
-    <img src="/img/rascals-logo.png" alt="Rascals Logo" style="text-align: center;">
+      <h1>WELCOME TO</h1>
+      <img
+        src="/img/rascals-logo.png"
+        alt="Rascals Logo"
+        style="text-align: center"
+      />
 
-    <h3 style="text-align: center;">Pick your Username and get started!</h3>
+      <h3 style="text-align: center">Pick your Username and get started!</h3>
 
-    <!-- Formulär som anger användarnamn-->
-    <form id="formUsername" action="">
-
-        <input type="text" name="username" id="username" placeholder="Username"><br>
-        <input type="submit" value="Start Game">
-
-    </form>
+      <!-- Formulär som anger användarnamn-->
+      <form id="formUsername" action="">
+        <input
+          type="text"
+          name="username"
+          id="username"
+          placeholder="Username"
+        /><br />
+        <input type="submit" value="Start Game" />
+      </form>
     </div>
     <div id="gamePage" class="hidden">
+      <canvas style="image-rendering: pixelated"></canvas>
 
-    <canvas style="image-rendering: pixelated;"></canvas>
-
-    <section id="chatSection">
-    
-    <div id="chat">
-
-        <div class="message">
+      <section id="chatSection">
+        <div id="chat">
+          <div class="message"></div>
         </div>
-
-    </div>
-    <!-- Formulär för att skriva meddelande -->
-    <form id="formMessage" action="">
-
-        <input type="text" name="msg" id="msg">
-        <input type="submit" value="Send" id="sendButton">
-
-    </form>
-    </section>
+        <!-- Formulär för att skriva meddelande -->
+        <form id="formMessage" action="">
+          <input type="text" name="msg" id="msg" />
+          <input type="submit" value="Send" id="sendButton" />
+        </form>
+      </section>
     </div>
 
-    <script src="scripts/code.js"> </script>
-    
-</body>
+    <script src="./data/l_Background.js"></script>
+    <script src="./data/l_Decorations.js"></script>
+    <script src="./data/collisions.js"></script>
+
+    <script src="./js/utils.js"></script>
+
+    <script src="./classes/CollisionBlock.js"></script>
+    <script src="./classes/Player.js"></script>
+
+    <script src="./js/index.js"></script>
+    <script src="./js/eventListeners.js"></script>
+
+    <script src="scripts/code.js"></script>
+  </body>
 </html>
