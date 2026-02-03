@@ -18,26 +18,40 @@ class Player {
     this.image.src = "./img/black-cat-Sheet.png";
 
     // Storleken på framen vi vill klippa ut
-    this.frameWidth = this.width;
-    this.frameHeight = this.height;
-    
+    this.frameWidth = 32;
+    this.frameHeight = 32;
+
+    this.direction = "down";
+
+    this.directionRows = {
+      down: 0,
+      left: 1,
+      right: 2,
+      up: 3,
+    };
+
   }
 
   draw(c) {
     // Red square debug code
-    c.fillStyle = "rgba(0, 0, 255, 0.5)";
-    c.fillRect(this.x, this.y, this.width, this.height);
+    c.fillStyle = "rgba(0, 0, 255, 0)";
+    c.fillRect(this.x, this.y, this.width, this.height)
 
+    const row = this.directionRows[this.direction]
+
+    const frameY = row * this.frameHeight // row = {0,1,2,3} frameHeight = 32
+
+    // Rita ut spelaren
     c.drawImage(
       this.image, // Bildfilen
-      0,
-      0,
+      0, // Vilken ruta i spritesheeten (x-led)s
+      frameY, // Vilken ruta i spritesheeten (y-led)
       this.frameWidth, // Hur bred en ruta i spritesheet är
       this.frameHeight, // Hur hög en ruta i spritesheet är
       this.x, // Var på canvasen den ska ritas i x-led
       this.y, // Var på canvasen den ska ritas i y-led
-      32, // Hur bred den ska ritas på canvasen
-      32, // Hur hög den ska ritas på canvasen
+      this.width, // Hur bred den ska ritas på canvasen
+      this.height, // Hur hög den ska ritas på canvasen
     );
   }
 
@@ -67,12 +81,16 @@ class Player {
 
     if (keys.d.pressed) {
       this.velocity.x = X_VELOCITY;
+      this.direction = "right";
     } else if (keys.a.pressed) {
       this.velocity.x = -X_VELOCITY;
+      this.direction = "left";
     } else if (keys.w.pressed) {
       this.velocity.y = -Y_VELOCITY;
+      this.direction = "up";
     } else if (keys.s.pressed) {
       this.velocity.y = Y_VELOCITY;
+      this.direction = "down";
     }
   }
 

@@ -5,7 +5,7 @@ const dpr = window.devicePixelRatio || 1
 canvas.width = 1024 * dpr
 canvas.height = 576 * dpr
 
-// const zoomLevel = 3;
+const zoomLevel = 2;
 c.imageSmoothingEnabled = false;
 
 const layersData = {
@@ -102,10 +102,14 @@ const renderStaticLayers = async () => {
 
 // Change xy coordinates to move player's default position
 const player = new Player({
-  x: 50,
+  x: 100,
   y: 50,
   size: { width: 32, height: 32 },
 })
+const camera = {
+  x: 0,
+  y: 0,
+}
 
 const keys = {
   w: {
@@ -129,15 +133,22 @@ function animate(backgroundCanvas) {
   const deltaTime = (currentTime - lastTime) / 1000
   lastTime = currentTime
 
+  const scaleWidth = canvas.width / (dpr * zoomLevel)
+  const scaleHeight = canvas.height / (dpr * zoomLevel)
+
   // Update player position
   player.handleInput(keys)
   player.update(deltaTime, collisionBlocks)
 
+  camera.x = player.x + player.width / 2 - scaleWidth / 2
+  camera.y = player.y + player.height / 2 - scaleHeight / 2
+
   // Render scene
   c.save()
-  // c.scale(dpr * zoomLevel, dpr * zoomLevel);
-  c.scale(dpr, dpr)
+  c.scale(dpr * zoomLevel, dpr * zoomLevel);
+  // c.scale(dpr, dpr)
   c.clearRect(0, 0, canvas.width, canvas.height)
+  c.translate(-camera.x, -camera.y)
   c.drawImage(backgroundCanvas, 0, 0)
   player.draw(c)
   c.restore()
