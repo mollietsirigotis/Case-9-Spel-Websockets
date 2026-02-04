@@ -19,6 +19,7 @@
   "homepage": "https://github.com/mollietsirigotis/Case-9-Spel-Websockets#readme",
   "dependencies": {
     "express": "^5.2.1",
+    "nanoid": "^5.1.6",
     "nodemon": "^3.1.11",
     "ws": "^8.19.0"
   }

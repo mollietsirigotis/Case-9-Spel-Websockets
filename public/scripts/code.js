@@ -24,8 +24,25 @@ sendButton.classList.add("disabled");
 formUsername.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  // Spara användarnamnet lokalt
+   // Spara användarnamnet lokalt
   username = usernameElement.value.trim();
+
+  // Endpoint för inloggning
+  const endpoint = "http://localhost:8555/login";
+
+  const options = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username: username })
+  };
+
+  fetch(endpoint, options)
+    .then((res) => res.text())
+    .then((data) => {
+      console.log("Response from /login:", data);
+    })
+
+ 
 
   // Lås input så namnet inte ändras mitt i chatten
   usernameElement.setAttribute("disabled", true);
@@ -62,12 +79,14 @@ formMessage.addEventListener("submit", (e) => {
   // Skapar ett obj som innehåller både: meddelandet och vem som skickade det
   const obj = { msg: msg, username: username };
 
+  renderMessage(obj);
+
   // Skickar meddelandet till servern via Websocket
   websocket.send(JSON.stringify(obj));
 
   // Rensar input fältet efter meddelandet har skickats
   msgElement.value = "";
-  
+
   sendButton.disabled = true;
   sendButton.classList.add("disabled");
 });
