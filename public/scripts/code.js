@@ -13,6 +13,7 @@ const sendButton = document.querySelector("#sendButton");
 const websocket = new WebSocket("ws://localhost:8555");
 
 let username;
+authenticated = false;
 
 // Skicka knappen är inaktiv från start
 sendButton.disabled = true;
@@ -24,7 +25,7 @@ sendButton.classList.add("disabled");
 formUsername.addEventListener("submit", (e) => {
   e.preventDefault();
 
-   // Spara användarnamnet lokalt
+  // Spara användarnamnet lokalt
   username = usernameElement.value.trim();
 
   // Endpoint för inloggning
@@ -33,28 +34,32 @@ formUsername.addEventListener("submit", (e) => {
   const options = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username: username })
+    body: JSON.stringify({ username: username }),
   };
 
   fetch(endpoint, options)
-    .then((res) => res.text())
+    .then((res) => res.json())
     .then((data) => {
-      console.log("Response from /login:", data);
-    })
+      console.log("data", data);
 
- 
+      if (data.authenticated === true) {
+        authenticated = true;
+        username = data.username;
 
-  // Lås input så namnet inte ändras mitt i chatten
-  usernameElement.setAttribute("disabled", true);
+        // Lås input så namnet inte ändras mitt i chatten
+        usernameElement.setAttribute("disabled", true);
 
-  // Visa chattsektionen först när användaren submittat sitt användarnamn
-  // chatSection.classList.remove("hidden");
-  // istället för chatSection.classList.remove("hidden"); Lägg till display flex
-  // ge startPage class hidden
+        usernameElement.value = "";
 
-  usernameElement.value = "";
-  startPage.classList.add("hidden");
-  gamePage.classList.remove("hidden");
+        startPage.classList.add("hidden");
+        gamePage.classList.remove("hidden");
+
+        // Gör så att meddelandeinputfältet är i fokus så fort man li autentiserad
+        msgElement.focus();
+      } else {
+        // Ge meddelande till klienten om att autentiseringen inte gick igenom
+      }
+    });
 });
 
 // Lyssnar på input i meddelandefältet
@@ -72,12 +77,14 @@ msgElement.addEventListener("input", () => {
 formMessage.addEventListener("submit", (e) => {
   e.preventDefault();
 
+  // Endast autentiserade ska kunna chatta
+
   // Hämtar texten som skrivits i inputfältet
   const msg = msgElement.value.trim();
   if (msg === "") return;
 
   // Skapar ett obj som innehåller både: meddelandet och vem som skickade det
-  const obj = { msg: msg, username: username };
+  const obj = { type: "text", msg: msg, username: username };
 
   renderMessage(obj);
 
@@ -100,21 +107,60 @@ msgElement.addEventListener("keydown", (e) => {
 // Tar emot data från servern i realtid
 
 websocket.addEventListener("message", (e) => {
+  const data = e.data;
+
   // Data tas emot som text och parsas till objekt
   const obj = JSON.parse(e.data);
   console.log("obj", obj);
 
+  // Ta höjd för att meddelande via websocket kan ha olika type. typ text eller annat
+  // Om det är av type === "text" används metoden renderMessage
+
   // Renderar meddelandet i chatten
-  renderMessage(obj);
+  switch (obj.type) {
+    case "text":
+      renderMessage(obj);
+      break;
+
+      case "new_client":
+            console.log("Uppdatera något på klientsidan", obj.usersOnline);
+      break;
+
+      case "new_user":
+        
+
+      break;
+  }
 });
 
 // Funktioner
 
+/**
+ *
+ *
+ * @param {Object} obj
+ */
 function renderMessage(obj) {
+  let div = document.createElement("div");
   const p = document.createElement("p");
 
-  // Visar både användarnamn och meddelande
-  p.textContent = `${obj.username}: ${obj.msg}`;
+  if (obj.username !== username) {
+    div.classList.add("textMessage", "other");
+  } else {
+    div.classList.add("textMessage");
+  }
 
-  chatElement.appendChild(p);
+  // Meddelandet
+  p.textContent = obj.msg;
+  p.classList.add("text");
+  div.appendChild(p);
+
+  // Username
+  const divUsername = document.createElement("div");
+  divUsername.textContent = obj.username;
+  divUsername.classList.add("username");
+
+  div.appendChild(divUsername);
+
+  chatElement.appendChild(div);
 }

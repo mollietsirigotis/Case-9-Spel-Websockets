@@ -123,3 +123,16 @@ canvas {
   background-color: grey;
   opacity: 0.6;
 }
+
+#chat div.textMessage {
+text-align: end;
+border: 1px solid black;
+padding: 1rem;
+/* background-color: rgba(5, 17, 185, 0.425); */
+border-radius: 1rem;
+}
+
+#chat div.other {
+text-align: start;
+background-color: rgba(95, 95, 95, 0.356);
+}

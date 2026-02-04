@@ -28,7 +28,16 @@ server.on("upgrade", (req, socket, head) => {
   });
 });
 
-// Middlwware
+let users = ["Bobo", "Sivert"];
+
+// eventuellt hålla koll på vilka som är online
+let usersOnline = [];
+
+// Se till att uppdatera usersOnline när någon ansluter eller lämnar
+
+
+
+// Middleware
 // -----------------------------------------------------------------
 // Middleware för att parsa JSON i request body
 app.use(express.json());
@@ -42,8 +51,29 @@ app.post('/login', (req, res) => {
     console.log("A Post request", req.body);
 
     let username = req.body.username;
-    console.log("username: ", username);
+    console.log("Username:", username);
 
+    
+    if (users.includes(username)) {
+        console.log("User exists");
+
+        // Se till att aktuellt username tas bort från arrayen users
+        // Kolla att ett namn matchar öven om man glömmer inledande versal
+        users = users.filter((u) => u !== username);
+
+        console.log("Användare som finns kvar:", users);
+
+        // Bekräfta att användarnamnet är ok
+        // Skicka ett objekt
+
+        res.send({authenticated: true, username: username });
+
+        // Uppdatera listan med usersOnline
+        usersOnline.push(username);
+    }
+    else {
+        res.send({ authenticated: false });
+    }
 }   
 );
 
@@ -55,13 +85,20 @@ wss.on('connection', (ws) => {
 
     // Skicka meddelande till den nya klienten
     // Skicka och ta emot data förutsatt att det är i JSON format
-    const obj = { msg:"Welcome to the chat!" };
-    ws.send(JSON.stringify(obj));
+
+    //Skicka meddelande till alla klienter om att en ny användare är ansluten
+    const obj = { type: "new_client", msg:"New player joined!", usersOnline: usersOnline };
+    broadcast(wss, obj);
 
     
     // När en klient lämnar chatten
     ws.on('close', () => {
+
+        // Uppdatera usersOnline, skicka aktuell lista till alla klienter
+
         console.log(`Client left, number of clients: ${wss.clients.size}`);
+
+        // Ev skicka info till alla klienter om att någon lämnat
     });
 
     // När servern tar emot ett meddelande från en klient
@@ -70,17 +107,15 @@ wss.on('connection', (ws) => {
         // Parsar JSON-data till objekt
         const obj = JSON.parse(data);
 
-
         console.log(obj);
 
-        // Skickar meddelandet vidare till alla anslutna klienter
-        // wss.clients.forEach(client => {
-        //     client.send(JSON.stringify(obj));
-        // });
+        // Om behov finns, kontrollera obj.type för att avgöra vad det är för typ av meddelande
 
-        // broadcast(wss, obj);
-        broadcastExclude(wss, ws, obj);
-
+        switch (obj.type) {
+            case "text":
+                broadcastExclude(wss, ws, obj);
+            break;
+        }
     });
 });
 
