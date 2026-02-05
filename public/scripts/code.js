@@ -7,6 +7,7 @@ const usernameElement = document.querySelector("#username");
 const gamePage = document.querySelector("#gamePage");
 const startPage = document.querySelector("#startPage");
 const sendButton = document.querySelector("#sendButton");
+const onlineUsersElement = chatElement.querySelector("code");
 
 // Websocket-anslutning till servern
 
@@ -54,8 +55,13 @@ formUsername.addEventListener("submit", (e) => {
         startPage.classList.add("hidden");
         gamePage.classList.remove("hidden");
 
-        // Gör så att meddelandeinputfältet är i fokus så fort man li autentiserad
+        // Gör så att meddelandeinputfältet är i fokus så fort man blir autentiserad
         msgElement.focus();
+
+        // Meddela via Websocket att en användare har autentiserats
+        const obj = { type: "new_user", username: username };
+        websocket.send(JSON.stringify(obj));
+
       } else {
         // Ge meddelande till klienten om att autentiseringen inte gick igenom
       }
@@ -86,6 +92,11 @@ formMessage.addEventListener("submit", (e) => {
   // Skapar ett obj som innehåller både: meddelandet och vem som skickade det
   const obj = { type: "text", msg: msg, username: username };
 
+  // Aktuell tid
+  const date = new Date();
+  obj.date = date;
+
+  // Renderas direkt när man är inloggad
   renderMessage(obj);
 
   // Skickar meddelandet till servern via Websocket
@@ -114,7 +125,6 @@ websocket.addEventListener("message", (e) => {
   console.log("obj", obj);
 
   // Ta höjd för att meddelande via websocket kan ha olika type. typ text eller annat
-  // Om det är av type === "text" används metoden renderMessage
 
   // Renderar meddelandet i chatten
   switch (obj.type) {
@@ -127,8 +137,14 @@ websocket.addEventListener("message", (e) => {
       break;
 
       case "new_user":
-        
+            console.log("Uppdatera att följande användare är på banan", obj.username);
 
+            // Visa uppdaterad lista på aktuella användare som servern anser vara online
+            onlineUsersElement.textContent = obj.usersOnline;
+      break;
+
+      case "user_left":
+            onlineUsersElement.textContent = obj.usersOnline;
       break;
   }
 });
@@ -139,6 +155,7 @@ websocket.addEventListener("message", (e) => {
  *
  *
  * @param {Object} obj
+ * @param {Date} obj.date
  */
 function renderMessage(obj) {
   let div = document.createElement("div");
@@ -159,8 +176,19 @@ function renderMessage(obj) {
   const divUsername = document.createElement("div");
   divUsername.textContent = obj.username;
   divUsername.classList.add("username");
-
   div.appendChild(divUsername);
 
+  // Aktuell tid
+  const time = document.createElement("time");
+
+
+  //Skapa ett datumobjekt för att kunna välja ut en viss del
+  const date = new Date(obj.date);
+
+  // Visa tid som hh:m
+  time.textContent = date.toLocaleTimeString();
+  time.dateTime = date.toLocaleTimeString();
+  div.appendChild(time);
+  
   chatElement.appendChild(div);
 }

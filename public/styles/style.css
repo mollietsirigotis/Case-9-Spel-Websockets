@@ -127,7 +127,7 @@ canvas {
 #chat div.textMessage {
 text-align: end;
 border: 1px solid black;
-padding: 1rem;
+/* padding: 1rem; */
 /* background-color: rgba(5, 17, 185, 0.425); */
 border-radius: 1rem;
 }
