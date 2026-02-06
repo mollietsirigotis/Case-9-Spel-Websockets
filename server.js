@@ -15,6 +15,11 @@ const server = http.createServer(app);
 // Skapar en websocket server
 const wss = new WebSocketServer({ noServer: true });
 
+// API för att ge spelare ett ID
+app.get("/api/player-id", (req, res) => {
+  res.json({ id: nanoid() });
+});
+
 // Hanterar Websocket-handskakning
 // Bestämmer vilka som får ansluta
 server.on("upgrade", (req, socket, head) => {
@@ -145,6 +150,17 @@ wss.on("connection", (ws) => {
 
         // broadcastExclude(wss, ws, obj);
         broadcast(wss, obj);
+        break;
+        case "playerMove":    
+        // Skicka vidare till alla andra klienter att en spelare har rört sig
+        broadcastExclude(wss, ws, {
+            type: 'playerMove',
+            playerId: obj.playerId,
+            x: obj.x,
+            y: obj.y,
+            direction: obj.direction,
+            username: ws.username
+        });
         break;
     }
   });
