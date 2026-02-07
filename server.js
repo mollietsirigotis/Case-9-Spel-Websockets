@@ -14,7 +14,7 @@ const availableCatSprites = [
   "black-cat-Sheet.png",
   "orange-cat-Sheet.png",
   "white-cat-Sheet.png",
-  "gray-cat-Sheet.png"
+  "tabby-cat-Sheet.png",
 ];
 
 // Skickar statiska filer
@@ -60,7 +60,6 @@ app.use(express.json());
 // Routes
 // -----------------------------------------------------------------
 
-
 // När en ny klient ansluter via WebSocket
 wss.on("connection", (ws) => {
   console.log(`Client connected, number of clients: ${wss.clients.size}`);
@@ -83,7 +82,6 @@ wss.on("connection", (ws) => {
     console.log(`Client left, number of clients: ${wss.clients.size}`);
 
     // Ev skicka info till alla klienter om att någon lämnat
-
 
     // Ta bort ett element ur en array
     usersOnline = usersOnline.filter((u) => u !== ws.username);
@@ -133,15 +131,14 @@ wss.on("connection", (ws) => {
         // broadcastExclude(wss, ws, obj);
         broadcast(wss, obj);
         break;
-        case "playerMove":    
-        // Skicka vidare till alla andra klienter att en spelare har rört sig
+      case "playerMove":
         broadcastExclude(wss, ws, {
-            type: 'playerMove',
-            playerId: obj.playerId,
-            x: obj.x,
-            y: obj.y,
-            direction: obj.direction,
-            username: ws.username
+          type: "playerMove",
+          playerId: obj.playerId,
+          x: obj.x,
+          y: obj.y,
+          direction: obj.direction,
+          username: ws.username,
         });
         break;
     }
