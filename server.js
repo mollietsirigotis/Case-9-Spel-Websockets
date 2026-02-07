@@ -45,7 +45,7 @@ server.on("upgrade", (req, socket, head) => {
 });
 
 // Array with authenticated users (my pets)
-let users = ["Bobo", "Sivert", "Bella"];
+// let users = ["Bobo", "Sivert", "Bella"];
 
 // eventuellt hålla koll på vilka som är online
 let usersOnline = [];
@@ -53,42 +53,13 @@ let usersOnline = [];
 // Se till att uppdatera usersOnline när någon ansluter eller lämnar
 
 // Middleware
-// -----------------------------------------------------------------
+// --------------------------------------------------------------
 // Middleware för att parsa JSON i request body
 app.use(express.json());
 
 // Routes
 // -----------------------------------------------------------------
 
-app.post("/login", (req, res) => {
-  console.log("A Post request", req.body);
-
-  let username = req.body.username;
-  console.log("Username:", username);
-
-  if (users.includes(username)) {
-    console.log("User exists");
-
-    // Se till att aktuellt username tas bort från arrayen users
-    // Kolla att ett namn matchar öven om man glömmer inledande versal
-    users = users.filter((u) => u !== username);
-
-    console.log("Användare som finns kvar:", users);
-
-    // Bekräfta att användarnamnet är ok
-    // Skicka ett objekt
-
-    res.send({ authenticated: true, username: username });
-
-    // Uppdatera listan med usersOnline
-    // usersOnline.push(username);
-
-    // För att användaren som autentiserats ska kopplas till en websocket klient
-    // Avvakta med usersOnline tills dess att websocket är klar...
-  } else {
-    res.send({ authenticated: false });
-  }
-});
 
 // När en ny klient ansluter via WebSocket
 wss.on("connection", (ws) => {

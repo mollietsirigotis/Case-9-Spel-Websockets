@@ -16,6 +16,9 @@ const websocket = new WebSocket("ws://localhost:8555");
 let username;
 authenticated = false;
 
+let myPlayerId = null;
+const remotePlayers = new Map();
+
 // Skicka knappen är inaktiv från start
 sendButton.disabled = true;
 sendButton.classList.add("disabled");
@@ -23,49 +26,52 @@ sendButton.classList.add("disabled");
 // Händelselyssnare
 
 // När användaren anger sitt namn och strartar chatten
-formUsername.addEventListener("submit", (e) => {
+formUsername.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  // Spara användarnamnet lokalt
   username = usernameElement.value.trim();
+  
+  if (!username) {
+    alert("Please enter a username!");
+    return;
+  }
 
-  // Endpoint för inloggning
-  const endpoint = "http://localhost:8555/login";
+  try {
+    // Hämtar player ID från servern
+    const res = await fetch("http://localhost:8555/api/player-id");
+    const data = await res.json();
+    myPlayerId = data.id;
+    
+    console.log("Got player ID:", myPlayerId);
 
-  const options = {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username: username }),
-  };
+    // Visar spelet
+    authenticated = true;
+    usernameElement.setAttribute("disabled", true);
+    usernameElement.value = "";
+    startPage.classList.add("hidden");
+    gamePage.classList.remove("hidden");
+    msgElement.focus();
 
-  fetch(endpoint, options)
-    .then((res) => res.json())
-    .then((data) => {
-      console.log("data", data);
+    // Skickar till servern via WebSocket
+    const obj = { 
+      type: "new_user", 
+      username: username,
+      playerId: myPlayerId
+    };
+    websocket.send(JSON.stringify(obj));
 
-      if (data.authenticated === true) {
-        authenticated = true;
-        username = data.username;
+    // Sparar för index.js
+    window.myPlayerData = {
+      playerId: myPlayerId,
+      username: username
+    };
+    
+    console.log("Player initialized:", window.myPlayerData);
 
-        // Lås input så namnet inte ändras mitt i chatten
-        usernameElement.setAttribute("disabled", true);
-
-        usernameElement.value = "";
-
-        startPage.classList.add("hidden");
-        gamePage.classList.remove("hidden");
-
-        // Gör så att meddelandeinputfältet är i fokus så fort man blir autentiserad
-        msgElement.focus();
-
-        // Meddela via Websocket att en användare har autentiserats
-        const obj = { type: "new_user", username: username };
-        websocket.send(JSON.stringify(obj));
-
-      } else {
-        // Ge meddelande till klienten om att autentiseringen inte gick igenom
-      }
-    });
+  } catch (error) {
+    console.error("Error:", error);
+    alert("Could not connect to server!");
+  }
 });
 
 // Lyssnar på input i meddelandefältet
@@ -192,3 +198,4 @@ function renderMessage(obj) {
   
   chatElement.appendChild(div);
 }
+window.remotePlayers = remotePlayers;
