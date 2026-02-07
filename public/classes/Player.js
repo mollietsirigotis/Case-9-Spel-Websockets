@@ -7,6 +7,7 @@ class Player {
     y,
     size = { width: 32, height: 32 },
     velocity = { x: 0, y: 0 },
+    catSprite = "black-cat-Sheet.png",
   }) {
     this.x = x;
     this.y = y;
@@ -15,7 +16,8 @@ class Player {
     this.velocity = velocity;
 
     this.image = new Image();
-    this.image.src = "./img/black-cat-Sheet.png";
+    this.image.src = `./img/${catSprite}`;
+    console.log(`Player sprite: ${catSprite}`);
 
     // Storleken på framen vi vill klippa ut
     this.frameWidth = 32;
@@ -29,17 +31,16 @@ class Player {
       right: 2,
       up: 3,
     };
-
   }
 
   draw(c) {
     // Red square debug code
     c.fillStyle = "rgba(0, 0, 255, 0)";
-    c.fillRect(this.x, this.y, this.width, this.height)
+    c.fillRect(this.x, this.y, this.width, this.height);
 
-    const row = this.directionRows[this.direction]
+    const row = this.directionRows[this.direction];
 
-    const frameY = row * this.frameHeight // row = {0,1,2,3} frameHeight = 32
+    const frameY = row * this.frameHeight; // row = {0,1,2,3} frameHeight = 32
 
     // Rita ut spelaren
     c.drawImage(

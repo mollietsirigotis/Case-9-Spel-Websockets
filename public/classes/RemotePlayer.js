@@ -59,8 +59,8 @@ class RemotePlayer {
     // Rita användarnamn ovanför katten
     c.fillStyle = "white";
     c.strokeStyle = "black";
-    c.lineWidth = 3;
-    c.font = "bold 12px Arial";
+    c.lineWidth = 1;
+    c.font = "bold 8px Arial";
     
     const textWidth = c.measureText(this.username).width;
     const textX = this.x + (this.width / 2) - (textWidth / 2);
