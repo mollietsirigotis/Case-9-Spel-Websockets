@@ -118,20 +118,57 @@ wss.on("connection", (ws) => {
         break;
 
       case "new_user":
-        // Uppdatera listan usersOnline med användaren
+        // Ge spelaren nästa tillgängliga sprite
+        const spriteIndex = usersOnline.length;
+        const catSprite = availableCatSprites[spriteIndex];
 
+        // Skicka info om befintliga spelare till den nya spelaren
+        wss.clients.forEach((client) => {
+          if (client !== ws && client.playerId) {
+            ws.send(
+              JSON.stringify({
+                type: "new_user",
+                username: client.username,
+                playerId: client.playerId,
+                catSprite: client.catSprite,
+                x: client.x || 100,
+                y: client.y || 50,
+                direction: client.direction || "down",
+                usersOnline: usersOnline,
+              }),
+            );
+          }
+        });
+
+        // Uppdatera listan usersOnline med användaren
         usersOnline.push(obj.username);
         obj.usersOnline = usersOnline;
 
         // En variant som funkar i javaScript
         // Lägg till en egenskap till det objekt som nu har koll på klientkoppling
 
+        // Spara på websocket-objektet
         ws.username = obj.username;
+        ws.playerId = obj.playerId;
+        ws.catSprite = catSprite;
 
         // broadcastExclude(wss, ws, obj);
-        broadcast(wss, obj);
+        // Skicka till alla spelare att en ny spelare har joinat
+        broadcast(wss, {
+          type: "new_user",
+          username: obj.username,
+          playerId: obj.playerId,
+          catSprite: catSprite,
+          usersOnline: usersOnline,
+        });
         break;
       case "playerMove":
+        // Spara spelarens position på servern
+        ws.x = obj.x;
+        ws.y = obj.y;
+        ws.direction = obj.direction;
+
+        // Skicka vidare till alla andra klienter att en spelare har rört sig
         broadcastExclude(wss, ws, {
           type: "playerMove",
           playerId: obj.playerId,
