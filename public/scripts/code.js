@@ -182,6 +182,14 @@ websocket.addEventListener("message", (e) => {
     case "user_left":
       onlineUsersElement.textContent = obj.usersOnline;
       break;
+      case "playerMove":
+      if (obj.playerId !== myPlayerId) {
+        const remotePlayer = remotePlayers.get(obj.playerId);
+        if (remotePlayer) {
+          remotePlayer.updatePosition(obj.x, obj.y, obj.direction);
+        }
+      }
+      break;
   }
 });
 
@@ -228,3 +236,4 @@ function renderMessage(obj) {
   chatElement.appendChild(div);
 }
 window.remotePlayers = remotePlayers;
+window.websocket = websocket;

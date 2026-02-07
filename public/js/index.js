@@ -105,6 +105,9 @@ const player = new Player({
   y: 50,
   size: { width: 32, height: 32 },
 });
+
+window.player = player;
+
 const camera = {
   x: 0,
   y: 0,
