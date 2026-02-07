@@ -128,7 +128,6 @@ const keys = {
 
 let lastTime = performance.now()
 function animate(backgroundCanvas) {
-  // Calculate delta time
   const currentTime = performance.now()
   const deltaTime = (currentTime - lastTime) / 1000
   lastTime = currentTime
@@ -140,16 +139,30 @@ function animate(backgroundCanvas) {
   player.handleInput(keys)
   player.update(deltaTime, collisionBlocks)
 
+  // Uppdatera alla remote players
+  if (window.remotePlayers) {
+    window.remotePlayers.forEach(remotePlayer => {
+      remotePlayer.update(deltaTime);
+    });
+  }
+
   camera.x = player.x + player.width / 2 - scaleWidth / 2
   camera.y = player.y + player.height / 2 - scaleHeight / 2
 
   // Render scene
   c.save()
   c.scale(dpr * zoomLevel, dpr * zoomLevel);
-  // c.scale(dpr, dpr)
   c.clearRect(0, 0, canvas.width, canvas.height)
   c.translate(-camera.x, -camera.y)
   c.drawImage(backgroundCanvas, 0, 0)
+  
+  // Rita alla remote players
+  if (window.remotePlayers) {
+    window.remotePlayers.forEach(remotePlayer => {
+      remotePlayer.draw(c);
+    });
+  }
+  
   player.draw(c)
   c.restore()
 

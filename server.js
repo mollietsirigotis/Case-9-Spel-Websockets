@@ -6,6 +6,17 @@ import { nanoid } from "nanoid";
 const app = express();
 const PORT = 8555;
 
+// Max 4 spelare
+const MAX_PLAYERS = 4;
+
+// Tillgängliga katter
+const availableCatSprites = [
+  "black-cat-Sheet.png",
+  "orange-cat-Sheet.png",
+  "white-cat-Sheet.png",
+  "gray-cat-Sheet.png"
+];
+
 // Skickar statiska filer
 app.use(express.static("public"));
 
