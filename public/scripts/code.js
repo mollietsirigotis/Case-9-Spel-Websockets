@@ -158,7 +158,25 @@ websocket.addEventListener("message", (e) => {
       if (obj.playerId === myPlayerId && window.player) {
         window.player.image.src = `./img/${obj.catSprite}`;
       }
+      // Skapa en RemotePlayer-instans för andra spelare
+      if (obj.playerId && obj.playerId !== myPlayerId) {
+        const remotePlayer = new RemotePlayer({
+          playerId: obj.playerId,
+          username: obj.username,
+          x: 100 + Math.random() * 200,
+          y: 50 + Math.random() * 200,
+          direction: "down",
+          catSprite: obj.catSprite,
+        });
 
+        remotePlayers.set(obj.playerId, remotePlayer);
+        console.log(
+          "Created RemotePlayer for:",
+          obj.username,
+          "Total:",
+          remotePlayers.size,
+        );
+      }
       break;
 
     case "user_left":
