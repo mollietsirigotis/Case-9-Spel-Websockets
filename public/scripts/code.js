@@ -30,7 +30,7 @@ formUsername.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   username = usernameElement.value.trim();
-  
+
   if (!username) {
     alert("Please enter a username!");
     return;
@@ -41,7 +41,7 @@ formUsername.addEventListener("submit", async (e) => {
     const res = await fetch("http://localhost:8555/api/player-id");
     const data = await res.json();
     myPlayerId = data.id;
-    
+
     console.log("Got player ID:", myPlayerId);
 
     // Visar spelet
@@ -53,21 +53,20 @@ formUsername.addEventListener("submit", async (e) => {
     msgElement.focus();
 
     // Skickar till servern via WebSocket
-    const obj = { 
-      type: "new_user", 
+    const obj = {
+      type: "new_user",
       username: username,
-      playerId: myPlayerId
+      playerId: myPlayerId,
     };
     websocket.send(JSON.stringify(obj));
 
     // Sparar för index.js
     window.myPlayerData = {
       playerId: myPlayerId,
-      username: username
+      username: username,
     };
-    
-    console.log("Player initialized:", window.myPlayerData);
 
+    console.log("Player initialized:", window.myPlayerData);
   } catch (error) {
     console.error("Error:", error);
     alert("Could not connect to server!");
@@ -138,19 +137,32 @@ websocket.addEventListener("message", (e) => {
       renderMessage(obj);
       break;
 
-      case "new_client":
-            console.log("Uppdatera något på klientsidan", obj.usersOnline);
+    case "new_client":
+      console.log("Uppdatera något på klientsidan", obj.usersOnline);
       break;
 
-      case "new_user":
-            console.log("Uppdatera att följande användare är på banan", obj.username);
+    case "new_user":
+      console.log(
+        "Player joined:",
+        obj.username,
+        "PlayerId:",
+        obj.playerId,
+        "Sprite:",
+        obj.catSprite,
+      );
 
-            // Visa uppdaterad lista på aktuella användare som servern anser vara online
-            onlineUsersElement.textContent = obj.usersOnline;
+      // Uppdatera online-listan
+      onlineUsersElement.textContent = obj.usersOnline;
+
+      // Om det är den nya spelaren som har joinat, skapa en RemotePlayer-instans för den
+      if (obj.playerId === myPlayerId && window.player) {
+        window.player.image.src = `./img/${obj.catSprite}`;
+      }
+
       break;
 
-      case "user_left":
-            onlineUsersElement.textContent = obj.usersOnline;
+    case "user_left":
+      onlineUsersElement.textContent = obj.usersOnline;
       break;
   }
 });
@@ -187,7 +199,6 @@ function renderMessage(obj) {
   // Aktuell tid
   const time = document.createElement("time");
 
-
   //Skapa ett datumobjekt för att kunna välja ut en viss del
   const date = new Date(obj.date);
 
@@ -195,7 +206,7 @@ function renderMessage(obj) {
   time.textContent = date.toLocaleTimeString();
   time.dateTime = date.toLocaleTimeString();
   div.appendChild(time);
-  
+
   chatElement.appendChild(div);
 }
 window.remotePlayers = remotePlayers;
