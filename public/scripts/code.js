@@ -37,6 +37,25 @@ formUsername.addEventListener("submit", async (e) => {
     return;
   }
 
+  // Användarnamnet måste vara minst 2 tecken
+  if (username.length < 2) {
+    alert("Username must be at least 2 characters!");
+    return;
+  }
+
+  // Max 12 tecken
+  if (username.length > 12) {
+    alert("Username must be maximum 12 characters!");
+    return;
+  }
+
+  // Endast bokstäver, även svenska tecken (inga siffror eller specialtecken)
+  const onlyLetters = /^[a-zA-ZåäöÅÄÖ]+$/;
+  if (!onlyLetters.test(username)) {
+    alert("Username can only contain letters (a-z)!");
+    return;
+  }
+
   try {
     // Hämtar player ID från servern
     const res = await fetch("http://localhost:8555/api/player-id");
