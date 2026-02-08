@@ -8,6 +8,7 @@ const gamePage = document.querySelector("#gamePage");
 const startPage = document.querySelector("#startPage");
 const sendButton = document.querySelector("#sendButton");
 const onlineUsersElement = chatElement.querySelector("code");
+const leaveGameButton = document.querySelector("#leaveGame");
 
 // Websocket-anslutning till servern
 
@@ -71,6 +72,18 @@ formUsername.addEventListener("submit", async (e) => {
     console.error("Error:", error);
     alert("Could not connect to server!");
   }
+});
+
+// Leave game-knapp
+leaveGameButton.addEventListener("click", () => {
+  console.log("Leaving game...");
+
+  if (websocket && websocket.readyState === WebSocket.OPEN) {
+    websocket.close();
+  }
+
+  startPage.classList.remove("hidden");
+  gamePage.classList.add("hidden");
 });
 
 // Lyssnar på input i meddelandefältet
@@ -181,8 +194,14 @@ websocket.addEventListener("message", (e) => {
 
     case "user_left":
       onlineUsersElement.textContent = obj.usersOnline;
+
+      if (obj.playerId && remotePlayers.has(obj.playerId)) {
+        remotePlayers.delete(obj.playerId);
+        console.log("Removed RemotePlayer:", obj.playerId);
+      }
       break;
-      case "playerMove":
+
+    case "playerMove":
       if (obj.playerId !== myPlayerId) {
         const remotePlayer = remotePlayers.get(obj.playerId);
         if (remotePlayer) {

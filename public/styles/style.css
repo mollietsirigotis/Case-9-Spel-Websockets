@@ -136,3 +136,10 @@ border-radius: 1rem;
 text-align: start;
 background-color: rgba(95, 95, 95, 0.356);
 }
+#leaveGame {
+  padding: 0.4rem;
+  background-color: red;
+  border-radius: 0.5rem;
+  text-align: center;
+  cursor: pointer;
+}

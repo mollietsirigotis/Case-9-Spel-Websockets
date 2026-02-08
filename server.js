@@ -88,6 +88,7 @@ wss.on("connection", (ws) => {
     const obj = {
       type: "user_left",
       username: ws.username,
+      playerId: ws.playerId,
       usersOnline: usersOnline,
     };
 
