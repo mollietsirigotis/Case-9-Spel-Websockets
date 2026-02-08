@@ -128,30 +128,30 @@ const keys = {
   },
 };
 
-let lastTime = performance.now();
-let lastSentTime = 0;
+let lastTime = performance.now(); // För att hålla koll på tid mellan frames
+let lastSentTime = 0; // För att begränsa hur ofta vi skickar positioner till servern
 
 function animate(backgroundCanvas) {
-  const currentTime = performance.now();
-  const deltaTime = (currentTime - lastTime) / 1000;
-  lastTime = currentTime;
+  const currentTime = performance.now(); // För att hålla koll på tid mellan frames
+  const deltaTime = (currentTime - lastTime) / 1000; // Tid i sekunder
+  lastTime = currentTime; // Uppdatera tidsstämpel för nästa frame
 
-  const scaleWidth = canvas.width / (dpr * zoomLevel);
-  const scaleHeight = canvas.height / (dpr * zoomLevel);
+  const scaleWidth = canvas.width / (dpr * zoomLevel); // Räkna ut den skalade bredden
+  const scaleHeight = canvas.height / (dpr * zoomLevel); // Räkna ut den skalade höjden
 
   // Update player position
 
-  player.handleInput(keys);
+  player.handleInput(keys); // Uppdatera spelarens riktning baserat på input
 
-  player.update(deltaTime, collisionBlocks);
+  player.update(deltaTime, collisionBlocks); // Uppdatera spelarens position baserat på hastighet och kollisioner
 
   // Skicka position till servern
 
   if (
-    window.websocket &&
-    window.websocket.readyState === 1 &&
-    window.myPlayerData &&
-    currentTime - lastSentTime > 50
+    window.websocket && // Kontrollera att websocket är ansluten
+    window.websocket.readyState === 1 && // Kontrollera att websocket är öppen
+    window.myPlayerData && // Kontrollera att vi har spelardata
+    currentTime - lastSentTime > 50 // Skicka högst 20 gånger per sekund (var 50ms)
   ) {
     window.websocket.send(
       JSON.stringify({

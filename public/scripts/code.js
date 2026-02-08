@@ -84,6 +84,15 @@ leaveGameButton.addEventListener("click", () => {
 
   startPage.classList.remove("hidden");
   gamePage.classList.add("hidden");
+
+  // Återställ formulär
+  usernameElement.removeAttribute("disabled");
+  usernameElement.value = "";
+
+  // Ladda om sidan för att starta om helt
+  setTimeout(() => {
+    window.location.reload();
+  }, 500);
 });
 
 // Lyssnar på input i meddelandefältet
@@ -129,7 +138,7 @@ formMessage.addEventListener("submit", (e) => {
 
 // Lyssnar på tangenttryck i meddelandeinput
 msgElement.addEventListener("keydown", (e) => {
-  console.log("is typing", e.key);
+  // console.log("is typing", e.key);
 });
 
 // Websocket-lyssnare
@@ -176,8 +185,8 @@ websocket.addEventListener("message", (e) => {
         const remotePlayer = new RemotePlayer({
           playerId: obj.playerId,
           username: obj.username,
-          x: 100 + Math.random() * 200,
-          y: 50 + Math.random() * 200,
+          x: obj.x || 100,
+          y: obj.y || 50,
           direction: "down",
           catSprite: obj.catSprite,
         });

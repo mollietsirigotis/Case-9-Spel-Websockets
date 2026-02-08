@@ -100,7 +100,7 @@ wss.on("connection", (ws) => {
     // Parsar JSON-data till objekt
     const obj = JSON.parse(data);
 
-    console.log(obj);
+    // console.log(obj);
 
     // Om behov finns, kontrollera obj.type för att avgöra vad det är för typ av meddelande
 

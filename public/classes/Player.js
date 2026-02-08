@@ -1,5 +1,5 @@
-const X_VELOCITY = 200;
-const Y_VELOCITY = 200;
+const X_VELOCITY = 150;
+const Y_VELOCITY = 150;
 
 class Player {
   constructor({
@@ -23,6 +23,11 @@ class Player {
     this.frameWidth = 32;
     this.frameHeight = 32;
 
+    this.currentFrame = 0; // Håller reda på vilken frame i spritesheeten som ska ritas
+    this.frameCount = 4; // Antal frames i varje riktning
+    this.frameTime = 0; // Tid som har gått sedan senaste frame-byte
+    this.frameInterval = 0.2; // Tid mellan frame-byten i sekunder
+
     this.direction = "down";
 
     this.directionRows = {
@@ -41,11 +46,12 @@ class Player {
     const row = this.directionRows[this.direction];
 
     const frameY = row * this.frameHeight; // row = {0,1,2,3} frameHeight = 32
+    const frameX = this.currentFrame * this.frameWidth; // currentFrame = {0,1,2,3} frameWidth = 32  
 
     // Rita ut spelaren
     c.drawImage(
       this.image, // Bildfilen
-      0, // Vilken ruta i spritesheeten (x-led)s
+      frameX, // Vilken ruta i spritesheeten (x-led)
       frameY, // Vilken ruta i spritesheeten (y-led)
       this.frameWidth, // Hur bred en ruta i spritesheet är
       this.frameHeight, // Hur hög en ruta i spritesheet är
@@ -58,6 +64,23 @@ class Player {
 
   update(deltaTime, collisionBlocks) {
     if (!deltaTime) return;
+
+    // Kolla om spelaren rör sig
+    const isMoving = this.velocity.x !== 0 || this.velocity.y !== 0;
+
+    if (isMoving) {
+      // Uppdatera frameTime
+      this.frameTime += deltaTime; // Ackumelera tid sedan senaste frame-byte
+      // console.log(this.frameTime);
+      if (this.frameTime >= this.frameInterval) {
+        this.currentFrame = (this.currentFrame + 1) % this.frameCount; // Byt till nästa frame, loopa tillbaka till 0
+        this.frameTime = 0; // Reset timer
+      }
+    } else {
+      // Om spelaren inte rör sig, resetta till första framen i riktningen
+      this.currentFrame = 0;
+    }
+
 
     // Update horizontal position and check collisions
     this.updateHorizontalPosition(deltaTime);
