@@ -119,6 +119,19 @@ wss.on("connection", (ws) => {
         break;
 
       case "new_user":
+        if (usersOnline.length >= MAX_PLAYERS) {
+          console.log(`${obj.username} rejected - game is full!`);
+
+          ws.send(
+            JSON.stringify({
+              type: "gameFull",
+              message: `Game is full! Maximum ${MAX_PLAYERS} players allowed.`,
+            }),
+          );
+
+          ws.close();
+          return;
+        }
         // Ge spelaren nästa tillgängliga sprite
         const spriteIndex = usersOnline.length;
         const catSprite = availableCatSprites[spriteIndex];

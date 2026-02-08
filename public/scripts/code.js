@@ -45,13 +45,11 @@ formUsername.addEventListener("submit", async (e) => {
 
     console.log("Got player ID:", myPlayerId);
 
-    // Visar spelet
-    authenticated = true;
-    usernameElement.setAttribute("disabled", true);
-    usernameElement.value = "";
-    startPage.classList.add("hidden");
-    gamePage.classList.remove("hidden");
-    msgElement.focus();
+    // Sparar för index.js
+    window.myPlayerData = {
+      playerId: myPlayerId,
+      username: username,
+    };
 
     // Skickar till servern via WebSocket
     const obj = {
@@ -60,14 +58,7 @@ formUsername.addEventListener("submit", async (e) => {
       playerId: myPlayerId,
     };
     websocket.send(JSON.stringify(obj));
-
-    // Sparar för index.js
-    window.myPlayerData = {
-      playerId: myPlayerId,
-      username: username,
-    };
-
-    console.log("Player initialized:", window.myPlayerData);
+    // Spelet visas när vi får tillbaka new_user från servern
   } catch (error) {
     console.error("Error:", error);
     alert("Could not connect to server!");
@@ -155,6 +146,11 @@ websocket.addEventListener("message", (e) => {
 
   // Renderar meddelandet i chatten
   switch (obj.type) {
+    case "gameFull": // Om servern skickar meddelande om att spelet är fullt
+      alert(obj.message);
+      console.log("Game is full");
+      break;
+
     case "text":
       renderMessage(obj);
       break;
@@ -179,6 +175,12 @@ websocket.addEventListener("message", (e) => {
       // Om det är den nya spelaren som har joinat, skapa en RemotePlayer-instans för den
       if (obj.playerId === myPlayerId && window.player) {
         window.player.image.src = `./img/${obj.catSprite}`;
+        authenticated = true;
+        usernameElement.setAttribute("disabled", true);
+        usernameElement.value = "";
+        startPage.classList.add("hidden");
+        gamePage.classList.remove("hidden");
+        msgElement.focus();
       }
       // Skapa en RemotePlayer-instans för andra spelare
       if (obj.playerId && obj.playerId !== myPlayerId) {
